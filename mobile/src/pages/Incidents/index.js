@@ -21,6 +21,10 @@ export default function Incidents() {
     navigation.navigate('Detail', { incident });
   }
 
+  function navigateToIncidentCreate() {
+    navigation.navigate('IncidentCreate');
+  }
+
   async function loadIncidents() {
     if (loading) {
       return;
@@ -83,12 +87,28 @@ export default function Incidents() {
               style={styles.detailsButton}
               onPress={() => navigateToDetail(incident)}
             >
-              <Text style={styles.detailsButtonText}>Ver mais detalhes</Text>
-              <Feather name="arrow-right" size={16} color="#E02041"></Feather>
+            <Text style={styles.detailsButtonText}>Ver mais detalhes</Text>
+            <Feather name="arrow-right" size={16} color="#E02041"></Feather>
             </TouchableOpacity>
           </View>
         )}
       />
+
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => navigateToIncidentCreate()}
+        style={styles.touchFloatButton}>
+        <Image
+          //We are making FAB using TouchableOpacity with an image
+          //We are using online image here
+          source={{
+            uri:'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
+          }}
+          //You can use you project image Example below
+          //source={require('./images/float-add-icon.png')}
+          style={styles.FloatingButtonStyle}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
