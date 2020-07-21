@@ -14,12 +14,13 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
 
-  headerText: {
+  totalText: {
     fontSize: 15,
     color: '#737380',
+    paddingTop: 10
   },
 
-  headerTextBold: {
+  totalTextBold: {
     fontWeight: 'bold'
   },
 
@@ -38,7 +39,7 @@ export default StyleSheet.create({
   },
 
   incidentList: {
-    marginTop: 32,
+    marginTop: 15,
   },
 
   incident: {
@@ -84,7 +85,7 @@ export default StyleSheet.create({
   },
 
   FloatingButtonStyle: {
-    resizeMode: 'contain',
+    //resizeMode: 'contain',
     width: 50,
     height: 50,
     //backgroundColor:'black'

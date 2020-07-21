@@ -17,7 +17,8 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "knex": "^0.21.1",
-    "sqlite3": "^4.2.0" 
+    "lodash": "^4.17.19",
+    "sqlite3": "^4.2.0"
   },
   "devDependencies": {
     "jest": "^26.1.0",

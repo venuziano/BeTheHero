@@ -30,6 +30,7 @@ export default function Register() {
     try {
       const response = await api.post('ongs', data)
 
+      localStorage.setItem('ongID', response.data.id);
       alert(`Seu ID de acesso: ${response.data.id}`);
       
       history.push('/')

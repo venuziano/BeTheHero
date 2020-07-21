@@ -9,7 +9,8 @@ import logoImg from '../../assets/logo.svg'
 import heroesImg from '../../assets/heroes.png'
 
 export default function Logon() {
-  const [id, setId] = useState('');
+  const ongID = localStorage.getItem('ongID');
+  const [id, setId] = useState(ongID);
 
   const history = useHistory();
 
