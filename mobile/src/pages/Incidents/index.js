@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Feather, AntDesign, SimpleLineIcons } from '@expo/vector-icons';
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { View, FlatList, Image, Text, TouchableOpacity, AsyncStorage, Alert, BackHandler, ToastAndroid } from 'react-native'
 
 import api from '../../services/api'
@@ -20,45 +20,6 @@ export default function Incidents() {
 
   const navigation = useNavigation();
 
-//   async function loadStorage() {
-    
-//     try {
-//       const ongid = await AsyncStorage.getItem('ongID');
-//       const ongname = await AsyncStorage.getItem('ongName');
-//       console.log('ongid: ' + ongid)
-//       console.log('ongname: ' + ongname)
-//       if (ongid && ongname !== null) {
-//         setID(ongid);
-//         setName(ongname);
-//       }
-//     } catch (e) {
-//       alert('erro', e);
-//     }
-//     console.log('id dentro do loadStorage: ' + id),
-//     loadIncidents();
-// }
-
-  loadStorage = async function(callback) {
-    
-    try {
-      const ongid = await AsyncStorage.getItem('ongID');
-      const ongname = await AsyncStorage.getItem('ongName');
-
-      console.log('ongid: ' + ongid)
-      console.log('ongname: ' + ongname)
-
-      if (ongid && ongname !== null) {
-        setID(ongid);
-        setName(ongname);
-      }
-    } catch (e) {
-      alert(e);
-    }
-    
-    console.log('id dentro do loadStorage: ' + id);
-    callback();
-  }
-
   function navigateToDetail(incident) {
     navigation.navigate('Detail', { incident });
   }
@@ -67,11 +28,71 @@ export default function Incidents() {
     navigation.navigate('IncidentCreate');
   }
 
-  function handleLogout(){
-    navigation.navigate('Logon');
+  const handleLogout = () => {
+    Alert.alert(
+      "Deseja sair?",
+      "Confirme abaixo.",
+      [
+        { 
+          text: "Sim", 
+          onPress: () => navigation.navigate('Logon')
+        },
+        {
+          text: "Não",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
   }
 
-  loadIncidents = async function() {
+  const handleExit = () => {
+    Alert.alert(
+      "Deseja fechar o aplicativo?",
+      "Confirme abaixo.",
+      [
+        { 
+          text: "Sim", 
+          onPress: () => BackHandler.exitApp()
+        },
+        {
+          text: "Não",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+  }
+
+  BackHandler.addEventListener('hardwareBackPress', handleExit);
+
+  async function loadStorage() {
+    var ongid = '';
+    var ongname = '';
+
+    try {
+      ongid = await AsyncStorage.getItem('ongID');
+      ongname = await AsyncStorage.getItem('ongName');
+
+    } catch (e) {
+      alert(e);
+    }
+
+    return new Promise((resolve, reject) => {
+
+      if (ongid !== null) {
+        setID(ongid);
+        setName(ongname);
+        const ong = { 'name': ongname, 'id': ongid}
+
+        return resolve(ong);
+      }
+    })
+  }
+
+  loadIncidents = async function(ong) {
 
     if (loading) {
       return;
@@ -82,14 +103,49 @@ export default function Incidents() {
     }
 
     try {
-      console.log('id dentro do loadincidents: ' + id)
+      const response = await api.get('profiles', {
+        headers: {
+          Authorization: ong.id,
+        },
+        params: { page },
+      });
+  
+      setIncidents([ ... incidents, ... response.data]);
+      setTotal(response.headers['x-total-count']);
+      setPage(page + 1);
+      setLoading(false);
+      
+      // if(! response.data) {
+      //   console.log('ta vazioo: ' + response.data)
+      // } else {
+      //   console.log('não ta vazio: ' + response.data)
+      // }
+
+      console.log('page: ' + page + ' , list: ' + response.data)
+
+    } catch (e) {
+      alert(e);
+    }  
+  }
+
+  loadIncidentsAfterLaunch = async function() {
+
+    if (loading) {
+      return;
+    }
+
+    if (total > 0 && incidents.lenght === total) {
+      return;
+    }
+
+    try {
       const response = await api.get('profiles', {
         headers: {
           Authorization: id,
         },
         params: { page },
       });
-  
+
       setIncidents([ ... incidents, ... response.data]);
       setTotal(response.headers['x-total-count']);
       setPage(page +1);
@@ -100,56 +156,19 @@ export default function Incidents() {
     }  
   }
 
-  // async function loadIncidents() {
-
-  //   if (loading) {
-  //     return;
-  //   }
-
-  //   if (total > 0 && incidents.lenght === total) {
-  //     return;
-  //   }
-
-  //   try {
-  //     console.log('id dentro do loadincidents: ' + id)
-  //     const response = await api.get('profiles', {
-  //       headers: {
-  //         Authorization: id,
-  //       },
-  //       params: { page },
-  //     });
-  
-  //     setIncidents([ ... incidents, ... response.data]);
-  //     setTotal(response.headers['x-total-count']);
-  //     setPage(page +1);
-  //     setLoading(false);
-
-  //   } catch (e) {
-  //     alert(e);
-  //   }  
-  // }
-
   useEffect(() => {
     navigation.addListener('focus', () => {
-      loadStorage(loadIncidents);
+     
+      loadStorage()
+      .then(loadIncidents)
+      
+      return function cleanup() {
+        loadStorage()
+        .then(loadIncidents)
+      };
+
     });
   }, []);
-
-  
-  // BackHandler.addEventListener('hardwareBackPress', handleBackButton());
-
-  // function handleBackButton() {
-  //   if (navigation.canGoBack()) {
-  //       if (validCloseWindow)
-  //           return false;
-  //       setvalidCloseWindow(true);
-  //       setTimeout(() => {
-  //         setvalidCloseWindow(false);
-  //       }, 30);
-  //       ToastAndroid.show("Press Again To Exit !", ToastAndroid.SHORT);
-  //       return true && clearTimeout();
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
@@ -169,8 +188,8 @@ export default function Incidents() {
         style={styles.incidentList}
         keyExtractor={incident => String(incident.id)}
         showsVerticalScrollIndicator={false}
-        onEndReached={loadIncidents}
-        onEndReachedThreshold={0.5}
+        onEndReached={loadIncidentsAfterLaunch}
+        onEndReachedThreshold={0.3}
         renderItem={({ item: incident }) => (
           <View style={styles.incident}>
             <Text style={styles.incidentProperty}>ONG:</Text>

@@ -7,7 +7,6 @@ import styles from './styles';
 import api from '../../services/api'
 
 export default function Logon() {
-  // const ongID = AsyncStorage.getItem('ongID')
   const [id, setId] = useState('');
 
   const navigation = useNavigation();
@@ -49,6 +48,21 @@ export default function Logon() {
       // Alert.alert('Falha', 'Erro no login, tente novamente.')
     }
   }
+
+  // async function handleLogon() {
+    
+  //   try {
+  //     const response = await api.post('session', { id })
+
+  //     //await AsyncStorage.setItem('ongID', id);
+  //     await AsyncStorage.setItem('ongName', response.data.name);
+      
+  //     navigation.navigate('Incidents');
+  //   } catch (e) {
+  //     alert(e)
+  //     // Alert.alert('Falha', 'Erro no login, tente novamente.')
+  //   }
+  // }
 
   useEffect(() => {  
     navigation.addListener('focus', () => {

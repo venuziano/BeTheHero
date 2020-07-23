@@ -16,16 +16,24 @@ module.exports = {
     const ongID = request.headers.authorization;
     const [count] = await connection('incidents').count('*').where('ref_ong', ongID);
 
-    const lisIncidents = await connection('incidents')
-    .join('ongs', 'ongs.id', '=', 'incidents.ref_ong')
-    .where('incidents.ref_ong', ongID)
-    .limit(5)
-    .offset((page - 1) * 5)
-    .select(['incidents.*', 'ongs.name', 'ongs.email', 'ongs.whatsapp', 'ongs.city', 'ongs.uf']);
+    var incidentsList = await connection('incidents')
+      .join('ongs', 'ongs.id', '=', 'incidents.ref_ong')
+      .where('incidents.ref_ong', ongID)
+      .limit(5)
+      .offset((page - 1) * 5)
+      .select(['incidents.*', 'ongs.name', 'ongs.email', 'ongs.whatsapp', 'ongs.city', 'ongs.uf']);
 
     response.header('X-Total-Count', count['count(*)']);
-    console.log('ongID: ' + ongID)
-    console.log('lisIncidents1: ' + lisIncidents)
-    return response.json(lisIncidents);
+    //console.log('ongID: ' + ongID)
+    //console.log('lisIncidents1: ' + incidentsList)
+
+    if(incidentsList.length === 0) {
+      incidentsList = null
+      console.log('ta vazioo: ' + incidentsList)
+    } else {
+      console.log('não ta vazio: ' + incidentsList)
+    }
+
+    return response.json(incidentsList);
   }
 }
