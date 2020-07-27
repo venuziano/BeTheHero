@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { Text, View, TextInput, TouchableOpacity, AsyncStorage, Alert } from 'react-native'
+import { Text, View, TextInput, TouchableOpacity, AsyncStorage, Alert, Image } from 'react-native'
 import { Entypo } from '@expo/vector-icons';
 
-import styles from './styles';
 import api from '../../services/api'
+
+import styles from './styles';
+import logoImg from '../../assets/logo.png';
 
 export default function Logon() {
   const [id, setId] = useState('');
 
   const navigation = useNavigation();
-
-  function incidentList() {
-    navigation.navigate('Incidents')
-  }
 
   function newOng() {
     navigation.navigate('newOng');
@@ -44,25 +42,10 @@ export default function Logon() {
 
       navigation.navigate('Incidents');
     } catch (e) {
-      alert(e)
-      // Alert.alert('Falha', 'Erro no login, tente novamente.')
+      //alert(e)
+      Alert.alert('Falha', 'Erro no login, tente novamente.')
     }
   }
-
-  // async function handleLogon() {
-    
-  //   try {
-  //     const response = await api.post('session', { id })
-
-  //     //await AsyncStorage.setItem('ongID', id);
-  //     await AsyncStorage.setItem('ongName', response.data.name);
-      
-  //     navigation.navigate('Incidents');
-  //   } catch (e) {
-  //     alert(e)
-  //     // Alert.alert('Falha', 'Erro no login, tente novamente.')
-  //   }
-  // }
 
   useEffect(() => {  
     navigation.addListener('focus', () => {
@@ -72,6 +55,10 @@ export default function Logon() {
 
   return(
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={logoImg} />
+      </View>
+
       <Text style={styles.title}>Faça seu Login</Text>
 
       <View style={styles.login}>

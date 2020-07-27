@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Feather, AntDesign, SimpleLineIcons } from '@expo/vector-icons';
+import { Feather, AntDesign, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
-import { View, FlatList, Image, Text, TouchableOpacity, AsyncStorage, Alert, BackHandler, ToastAndroid } from 'react-native'
+import { View, FlatList, Image, Text, TouchableOpacity, AsyncStorage, Alert, BackHandler, ToastAndroid, RefreshControlBase } from 'react-native'
 
 import api from '../../services/api'
 
@@ -16,7 +16,6 @@ export default function Incidents() {
   const [loading, setLoading] = useState(false);
   const [id, setID] = useState('');
   const [name, setName] = useState('');
-  // const [validCloseWindow, setvalidCloseWindow] = useState(false);
 
   const navigation = useNavigation();
 
@@ -30,8 +29,8 @@ export default function Incidents() {
 
   const handleLogout = () => {
     Alert.alert(
-      "Deseja sair?",
-      "Confirme abaixo.",
+      "Você será deslogado!",
+      "Deseja continuar?",
       [
         { 
           text: "Sim", 
@@ -45,16 +44,45 @@ export default function Incidents() {
       ],
       { cancelable: false }
     );
-  }
+  };
 
-  const handleExit = () => {
+  async function handleDelete(incidentToDelete) {
+    try {
+      await api.delete(`incidents/${incidentToDelete}`, {
+        headers: {
+          Authorization: id,
+        }
+      });
+
+      setIncidents(incidents.filter(incident => incident.id !== incidentToDelete));
+      
+      try {
+        const response = await api.get('profiles', {
+          headers: {
+            Authorization: id,
+          },
+          params: { page },
+        });
+    
+        setTotal(response.headers['x-total-count']);
+  
+      } catch (e) {
+        alert(e);
+      }  
+
+    } catch (e) {
+      alert(e)
+    }
+  };
+
+  const deleteAlert = (incident) => {
     Alert.alert(
-      "Deseja fechar o aplicativo?",
-      "Confirme abaixo.",
+      `O ${incident.title} será excluído.`,
+      "Deseja continuar?",
       [
         { 
           text: "Sim", 
-          onPress: () => BackHandler.exitApp()
+          onPress: () => handleDelete(incident.id)
         },
         {
           text: "Não",
@@ -63,10 +91,8 @@ export default function Incidents() {
         }
       ],
       { cancelable: false }
-    );
+    )
   }
-
-  BackHandler.addEventListener('hardwareBackPress', handleExit);
 
   async function loadStorage() {
     var ongid = '';
@@ -92,7 +118,7 @@ export default function Incidents() {
     })
   }
 
-  loadIncidents = async function(ong) {
+  async function loadIncidents(ong) {
 
     if (loading) {
       return;
@@ -101,6 +127,8 @@ export default function Incidents() {
     if (total > 0 && incidents.lenght === total) {
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await api.get('profiles', {
@@ -114,21 +142,13 @@ export default function Incidents() {
       setTotal(response.headers['x-total-count']);
       setPage(page + 1);
       setLoading(false);
-      
-      // if(! response.data) {
-      //   console.log('ta vazioo: ' + response.data)
-      // } else {
-      //   console.log('não ta vazio: ' + response.data)
-      // }
-
-      console.log('page: ' + page + ' , list: ' + response.data)
 
     } catch (e) {
       alert(e);
     }  
   }
 
-  loadIncidentsAfterLaunch = async function() {
+  async function loadIncidentsAfterLaunch() {
 
     if (loading) {
       return;
@@ -137,6 +157,8 @@ export default function Incidents() {
     if (total > 0 && incidents.lenght === total) {
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await api.get('profiles', {
@@ -156,15 +178,36 @@ export default function Incidents() {
     }  
   }
 
+  BackHandler.addEventListener('hardwareBackPress', () => {
+    Alert.alert(
+      "Deseja fechar o aplicativo?",
+      "",
+      [
+        { 
+          text: "Sim", 
+          onPress: () => BackHandler.exitApp()
+        },
+        {
+          text: "Não",
+          onPress: () => {},
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
+    return true;
+  });
+
   useEffect(() => {
+
     navigation.addListener('focus', () => {
      
       loadStorage()
-      .then(loadIncidents)
+        .then(loadIncidents)
       
       return function cleanup() {
         loadStorage()
-        .then(loadIncidents)
+          .then(loadIncidents)
       };
 
     });
@@ -185,6 +228,7 @@ export default function Incidents() {
 
       <FlatList
         data={incidents}
+        extraData={RefreshControlBase}
         style={styles.incidentList}
         keyExtractor={incident => String(incident.id)}
         showsVerticalScrollIndicator={false}
@@ -192,6 +236,13 @@ export default function Incidents() {
         onEndReachedThreshold={0.3}
         renderItem={({ item: incident }) => (
           <View style={styles.incident}>
+            <TouchableOpacity style={styles.delete} onPress={() => deleteAlert(incident)}>
+              <MaterialIcons
+                name="delete" 
+                size={30} 
+                color="black" 
+              />
+            </TouchableOpacity>
             <Text style={styles.incidentProperty}>ONG:</Text>
             <Text style={styles.incidentValue}>{incident.name}</Text>
 

@@ -49,10 +49,16 @@ export default StyleSheet.create({
     marginBottom: 16,
   },
 
+  delete: {
+    position: "absolute",
+    right: 15,
+    marginTop: 20
+  },
+
   incidentProperty: {
     fontSize: 14,
     color: '#41414d',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
   incidentValue: {

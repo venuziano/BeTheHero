@@ -24,15 +24,6 @@ module.exports = {
       .select(['incidents.*', 'ongs.name', 'ongs.email', 'ongs.whatsapp', 'ongs.city', 'ongs.uf']);
 
     response.header('X-Total-Count', count['count(*)']);
-    //console.log('ongID: ' + ongID)
-    //console.log('lisIncidents1: ' + incidentsList)
-
-    if(incidentsList.length === 0) {
-      incidentsList = null
-      console.log('ta vazioo: ' + incidentsList)
-    } else {
-      console.log('não ta vazio: ' + incidentsList)
-    }
 
     return response.json(incidentsList);
   }
