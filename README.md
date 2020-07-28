@@ -8,7 +8,7 @@ A Be The Hero tem como objetivo auxiliar na doação de casos de animais de ruas
 
 Para a aplicação mobile, desenvolvi além do que foi proposto na semana, permitindo que todo o fluxo de cadastro e ajuda/doação seja realizado.
 
-<video src="bethehero.mp4" width="1000" height="1000" controls preload></video>
+![](bethehero.gif)
 
 ## Construído com
 
