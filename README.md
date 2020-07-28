@@ -1,8 +1,8 @@
 # Be The Hero
 
-Aplicação web e mobile desenvolvida na semana OmniStack 11 da RocketSeat.
+Aplicação *web* e *mobile* desenvolvida na semana OmniStack 11 da RocketSeat.
 
-A Be The Hero tem como objetivo auxiliar na doação de casos de animais de ruas registrados pelas ONG's cadastradas no sistema. Com isso, os usuários poderão ajudar doendo valores para os casos entrando em contato com a ONG via whatsapp ou e-mail.
+A Be The Hero tem como objetivo auxiliar no registro e doação para casos de animais de ruas de ONG's de uma cidade. Os casos são registrados e mantidos pelas ONG's. Os usuários do aplicativo poderão doar valores para os casos entrando em contato com a ONG via whatsapp ou e-mail.
 
 ![](bethehero.png)
 
