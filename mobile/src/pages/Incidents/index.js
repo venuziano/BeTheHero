@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Feather, AntDesign, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
-import { View, FlatList, Image, Text, TouchableOpacity, AsyncStorage, Alert, BackHandler, ToastAndroid, RefreshControlBase } from 'react-native'
+import { View, FlatList, Image, Text, TouchableOpacity, AsyncStorage, Alert, BackHandler, RefreshControlBase } from 'react-native'
 
 import api from '../../services/api'
 
@@ -217,7 +217,10 @@ export default function Incidents() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={logoImg} />
-        <SimpleLineIcons onPress={handleLogout} name="logout" size={24} color="black" />
+        
+        <TouchableOpacity onPress={handleLogout}>
+          <SimpleLineIcons name="logout" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.title}>Bem-Vinda, {name}</Text>
