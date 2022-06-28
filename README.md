@@ -1,14 +1,14 @@
 # Be The Hero
 
-A Be The Hero tem como objetivo auxiliar no registro e doação para casos de animais de ruas de ONG's de uma cidade. Os casos são registrados e mantidos pelas ONG's. Os usuários do aplicativo poderão doar valores para os casos entrando em contato com a ONG via whatsapp ou e-mail.
+Be The Hero aims to assist in registering and donating cases of street animals to NGOs in a city. Cases are registered and maintained by NGOs. Application users will be able to donate amounts to cases by contacting the NGO via whatsapp or email.
 
 ![](bethehero.png)
 
-Demonstração da app mobile.
+Mobile app demonstration:
 
 ![](bethehero.gif)
 
-## Construído com
+## Built with
 
 * Node.js
 * ReactJS
@@ -16,15 +16,6 @@ Demonstração da app mobile.
 * Expo
 * Axios
 
-## Principais componentes utilizados no mobile (com excessão aos triviais)
-
-* AsyncStorage
-* FlatList
-* KeyboardAvoidingView
-* TouchableOpacity
-* TouchableWithoutFeedback
-* ScrollView
-
-## Autor
+## Author
 
 Rafael Rodrigues
